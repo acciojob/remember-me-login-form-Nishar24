@@ -1,16 +1,74 @@
 <!DOCTYPE html>
-
 <html>
-
 <head>
-	<link rel="stylesheet" href="styles.css">
+    <title>Login Page</title>
 </head>
-
 <body>
-	<!-- the entire body must be written by student -->
-    <script type="text/javascript" src="./script.js">
-</script>
+    <form id="loginForm">
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username"><br><br>
 
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password"><br><br>
+
+        <input type="checkbox" id="checkbox" name="remember">
+        <label for="checkbox">Remember Me</label><br><br>
+
+        <button type="submit" id="submit">Login</button>
+        <button type="button" id="existing" style="display: none;">Login with Existing</button>
+    </form>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const usernameInput = document.getElementById("username");
+            const passwordInput = document.getElementById("password");
+            const rememberCheckbox = document.getElementById("checkbox");
+            const submitButton = document.getElementById("submit");
+            const existingButton = document.getElementById("existing");
+            const loginForm = document.getElementById("loginForm");
+
+            const storageKey = "userCredentials";
+
+            function loadStoredCredentials() {
+                const storedCredentials = JSON.parse(localStorage.getItem(storageKey));
+                if (storedCredentials) {
+                    existingButton.style.display = "block";
+                }
+            }
+
+            function handleLogin(event) {
+                event.preventDefault();
+                const username = usernameInput.value.trim();
+                const password = passwordInput.value.trim();
+
+                if (!username || !password) {
+                    alert("Please enter both username and password.");
+                    return;
+                }
+
+                alert(`Logged in as ${username}`);
+
+                if (rememberCheckbox.checked) {
+                    localStorage.setItem(storageKey, JSON.stringify({ username, password }));
+                } else {
+                    localStorage.removeItem(storageKey);
+                }
+
+                existingButton.style.display = localStorage.getItem(storageKey) ? "block" : "none";
+            }
+
+            function handleExistingLogin() {
+                const storedCredentials = JSON.parse(localStorage.getItem(storageKey));
+                if (storedCredentials) {
+                    alert(`Logged in as ${storedCredentials.username}`);
+                }
+            }
+
+            loginForm.addEventListener("submit", handleLogin); // changed to form submit
+            existingButton.addEventListener("click", handleExistingLogin);
+
+            loadStoredCredentials();
+        });
+    </script>
 </body>
-
 </html>
